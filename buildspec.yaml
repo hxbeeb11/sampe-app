@@ -21,3 +21,8 @@ phases:
       - echo Pushing Docker image to Docker Hub...
       - docker push hxbeeb11/sample-app:latest
       - echo Build completed successfully.
+
+artifacts:
+  files:
+    - appspec.yml
+    - scripts/**/*
