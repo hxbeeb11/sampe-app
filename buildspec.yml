@@ -19,7 +19,7 @@ phases:
 
 artifacts:
   files:
-    - appspec.yaml
+    - appspec.yml
     - scripts/**/*
     - Dockerfile
     - **/*  # Optional: include other files if needed
