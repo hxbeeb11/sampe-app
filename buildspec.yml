@@ -5,8 +5,8 @@ env:
     IMAGE_REPO_NAME: "sample-app"
     IMAGE_TAG: "latest"
   parameter-store:
-    DOCKER_USERNAME: "/sample-app/docker-username"
-    DOCKER_PASSWORD: "/sample-app/docker-password"
+    DOCKER_USERNAME: "/codebuild/docker/username"
+    DOCKER_PASSWORD: "/codebuild/docker/password"
 
 phases:
   pre_build:
