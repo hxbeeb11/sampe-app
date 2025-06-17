@@ -1,10 +1,5 @@
 version: 0.2
 
-env:
-  parameter-store:
-    DOCKER_USERNAME: "/codebuild/docker/username"
-    DOCKER_PASSWORD: "/codebuild/docker/password"
-
 phases:
   pre_build:
     commands:
@@ -24,5 +19,7 @@ phases:
 
 artifacts:
   files:
-    - appspec.yml
+    - appspec.yaml
     - scripts/**/*
+    - Dockerfile
+    - **/*  # Optional: include other files if needed
