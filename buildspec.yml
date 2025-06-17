@@ -1,25 +1,43 @@
 version: 0.2
 
+env:
+  variables:
+    IMAGE_REPO_NAME: "sample-app"
+    IMAGE_TAG: "latest"
+  parameter-store:
+    DOCKER_USERNAME: "/sample-app/docker-username"
+    DOCKER_PASSWORD: "/sample-app/docker-password"
+
 phases:
   pre_build:
     commands:
       - echo Logging in to Docker Hub...
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      - REPOSITORY_URI=$DOCKER_USERNAME/$IMAGE_REPO_NAME
+      - IMAGE_TAG=${IMAGE_TAG:-latest}
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=${COMMIT_HASH:=latest}
 
   build:
     commands:
       - echo Building Docker image...
-      - docker build -t hxbeeb11/sample-app:latest .
+      - docker build -t $REPOSITORY_URI:$IMAGE_TAG .
+      - docker tag $REPOSITORY_URI:$IMAGE_TAG $REPOSITORY_URI:latest
 
   post_build:
     commands:
       - echo Pushing Docker image to Docker Hub...
-      - docker push hxbeeb11/sample-app:latest
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - docker push $REPOSITORY_URI:latest
       - echo Build completed successfully.
+      - printf '{"ImageURI":"%s"}' $REPOSITORY_URI:$IMAGE_TAG > imageDefinitions.json
 
 artifacts:
   files:
+    - imageDefinitions.json
     - appspec.yml
     - scripts/**/*
     - Dockerfile
-    - **/*  # Optional: include other files if needed
+    - requirements.txt
+    - app.py
+  discard-paths: no
